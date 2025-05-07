@@ -54,27 +54,4 @@ do for [j=1:words(mu_values)] {
     }
 }
 
-### Графики Theta(n) при lambda = 1e-5, 1e-6, 1e-7; mu = 1, 10, 100, 1000;
-do for [i=1:words(lambda_values)] {
-    lambda = word(lambda_values, i)
-
-    do for [j=1:words(mu_values)] {
-        mu = word(mu_values, j)
-
-        set output sprintf("charts/theta/lambda_mu_fixed/theta_lambda%s_mu%s_m.png", lambda, mu)
-        set title sprintf("Зависимость Θ(n) от n при λ=%s, μ=%s, разное m", lambda, mu)
-
-        set logscale y 10
-        set format y "10^{%L}"
-        set ytics 10
-        set yrange [1:1e8]
-
-        stats "data/data.dat" using 4:5 nooutput
-
-        plot for [k=1:words(m_values)] "< awk '!seen[$2,$3,$4,$5]++' data/data.dat" \
-            using ($2 == lambda && $3 == mu && $4 == word(m_values, k) ? $5 : NaN):($2 == lambda && $3 == mu && $4 == word(m_values, k) ? $6 : NaN) \
-            with lines title sprintf("m=%s", word(m_values, k))
-    }
-}
-
 set output
